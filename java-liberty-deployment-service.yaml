@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: javaliberty-deployment
+  labels:
+    app: javaliberty
+spec:
+  replicas: 2
+  selector:
+    matchLabels: 
+      app: javaliberty
+  template:
+    metadata:
+      labels:
+        app: javaliberty
+    spec:
+      containers:
+        - name: javaliberty
+          image: icr.io/java-liberty/java-liberty-app@sha256:831c762a1025aba5985d4eb92d0c0b4fd4fa0a1d82ec0d443df48baa77e826cf
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javaliberty-service
+spec:
+  selector:
+    app: javaliberty
+  type: LoadBalancer  
+  ports:
+    - protocol: TCP
+      port: 9080
+      targetPort: 9080
+      nodePort: 30001
